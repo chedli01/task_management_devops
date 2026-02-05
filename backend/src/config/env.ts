@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-  port: process.env.PORT || 5000,
+  port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   
   database: {
@@ -19,7 +19,7 @@ export const config = {
   },
   
   jwt: {
-    secret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
+    secret: process.env.JWT_SECRET as string || 'dev-secret-change-in-production',
     expiresIn: '7d',
   },
   
