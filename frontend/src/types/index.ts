@@ -1,10 +1,10 @@
-export interface User {
+export type User= {
   id: string;
   username: string;
   email: string;
 }
 
-export interface Task {
+export type Task ={
   id: string;
   title: string;
   description?: string;
@@ -16,18 +16,18 @@ export interface Task {
   updatedAt: string;
 }
 
-export interface LoginResponse {
+export type LoginResponse= {
   message: string;
   user: User;
   token: string;
 }
 
-export interface RegisterResponse {
+export type RegisterResponse= {
   message: string;
   user: User;
 }
 
-export interface ApiError {
+export type ApiError= {
   error: string;
   details?: string[];
 }

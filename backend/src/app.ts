@@ -9,13 +9,13 @@ import { configureRoutes } from './routes';
 const app: Application = express();
 
 // Security middleware
-// app.use(helmet());
-// app.use(
-//   cors({
-//     origin: config.cors.origin,
-//     credentials: true,
-//   })
-// );
+app.use(helmet());
+app.use(
+  cors({
+    origin: config.cors.origin,
+    credentials: true,
+  })
+);
 
 // Rate limiting
 const limiter = rateLimit({
