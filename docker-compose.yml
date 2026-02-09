@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   postgres:
@@ -7,25 +8,29 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: chedli123
       POSTGRES_DB: task_manager_db
-    # ❌ NO ports exposed - only accessible inside network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - task-manager-network
+    # ✅ Add health check
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d task_manager_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
     container_name: task-manager-redis
-    # ❌ NO ports exposed - only accessible inside network
     networks:
       - task-manager-network
 
   backend:
     build: ./backend
     container_name: task-manager-api
-    # ❌ NO ports exposed - only accessible via nginx proxy
     environment:
-      NODE_ENV: production  # Changed to production
+      NODE_ENV: production
       PORT: 5000
       DB_HOST: postgres
       DB_PORT: 5432
@@ -34,24 +39,24 @@ services:
       DB_NAME: task_manager_db
       REDIS_URL: redis://redis:6379
       JWT_SECRET: dev-secret-change-in-production
-      # Frontend now calls /api/* on same origin, so CORS allows the nginx domain
-      CORS_ORIGIN: http://20.199.177.125  # or your VM IP/domain
+      CORS_ORIGIN: http://localhost
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy  # ✅ Wait for health check
+      redis:
+        condition: service_started
     networks:
       - task-manager-network
+    # ✅ Auto-restart if crashes
+    restart: unless-stopped
 
   frontend:
     build:
       context: ./frontend
     container_name: task-manager-frontend
     ports:
-      # ✅ ONLY public port - 80 on host maps to 80 in container
       - "80:80"
     environment:
-      # Frontend build-time variable (Vite uses this at build time, not runtime)
-      # Since API is now same-origin, we use relative path
       VITE_API_URL: /api
     depends_on:
       - backend
