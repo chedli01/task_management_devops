@@ -1,12 +1,11 @@
 terraform {
   required_version = ">= 1.0"
 
-  # Remote backend (optional - stores state in Azure)
-  # Uncomment after first run to migrate state
+ 
   backend "azurerm" {
-    resource_group_name  = "terraform-state-rg"
-    storage_account_name = "tfstate<unique-id>"
-    container_name       = "tfstate"
+    resource_group_name  = "taskmanager-prod-rg"
+    storage_account_name = "taskmanagerprodexxarbit"
+    container_name       = "terraform-state"
     key                  = "prod.terraform.tfstate"
   }
 }
