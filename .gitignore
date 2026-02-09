@@ -1,1 +1,2 @@
 terraform/environments/prod/terraform.tfstate
+terraform/environments/prod/terraform.secret.tfvars
