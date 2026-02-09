@@ -7,6 +7,8 @@ import { errorHandler } from './middleware/errorHandler';
 import { configureRoutes } from './routes';
 
 const app: Application = express();
+app.set('trust proxy', 1); // Trust first proxy (nginx)
+
 
 // Security middleware
 app.use(helmet());
@@ -16,6 +18,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 // Rate limiting
 const limiter = rateLimit({
