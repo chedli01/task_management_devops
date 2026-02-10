@@ -11,7 +11,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - task-manager-network
-    # ✅ Add health check
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d task_manager_db"]
       interval: 5s
@@ -41,12 +40,11 @@ services:
       CORS_ORIGIN: http://localhost
     depends_on:
       postgres:
-        condition: service_healthy  # ✅ Wait for health check
+        condition: service_healthy 
       redis:
         condition: service_started
     networks:
       - task-manager-network
-    # ✅ Auto-restart if crashes
     restart: unless-stopped
 
   frontend:
