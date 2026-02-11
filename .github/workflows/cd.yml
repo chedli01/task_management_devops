@@ -6,6 +6,9 @@ on:
     workflows: ["Production CI"]  # Must match the name of your CI workflow
     types:
       - completed
+    branches:
+      - 'main'
+      - 'CI/CD-integration' 
 
 jobs:
   deploy:
