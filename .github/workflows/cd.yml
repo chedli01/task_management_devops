@@ -2,14 +2,10 @@ name: Production CD
 
 # Trigger automatically after the CI workflow completes
 on:
- push:
-    branches:
-        - 'main'
-        - 'CI/CD-integration'
-#   workflow_run:
-#     workflows: ["Production CI"]  # Must match the name of your CI workflow
-#     types:
-#       - completed 
+  workflow_run:
+    workflows: ["Production CI"]  # Must match the name of your CI workflow
+    types:
+      - completed 
 
 jobs:
   deploy:
