@@ -5,11 +5,11 @@ echo "Deploying Task Manager application..."
 
 cd "$(dirname "$0")/.."
 
-# Generate inventory (in case IP changed)
-# ../scripts/get-inventory.sh
+Generate inventory (in case IP changed)
+./scripts/get-inventory.sh
 
 # Run deployment playbook
-ansible-playbook playbooks/deploy.yml
+ansible-playbook playbooks/deploy.yml --ask-vault-pass
 
 echo ""
 echo "Application deployed!"

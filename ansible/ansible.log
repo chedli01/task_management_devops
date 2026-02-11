@@ -233,3 +233,39 @@ issues when running as another user. To avoid this, create the remote_tmp dir wi
 }
 2026-02-11 01:13:03,635 p=81402 u=chedli n=ansible | PLAY RECAP *************************************************************************************************************
 2026-02-11 01:13:03,635 p=81402 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-02-11 11:54:28,157 p=4548 u=chedli n=ansible |  [ERROR]: User interrupted execution
+
+2026-02-11 12:07:52,922 p=7509 u=chedli n=ansible | [WARNING]: Error getting vault password file (default): The vault password file /home/task_management_project/task_management_devops/ansible/.vault_pass was not found
+
+2026-02-11 12:07:52,923 p=7509 u=chedli n=ansible | ERROR! The vault password file /home/task_management_project/task_management_devops/ansible/.vault_pass was not found
+2026-02-11 12:10:36,830 p=8036 u=chedli n=ansible | PLAY [Deploy Task Manager Application] **************************************************************************************************************************************************************************
+2026-02-11 12:10:36,839 p=8036 u=chedli n=ansible | TASK [Gathering Facts] ******************************************************************************************************************************************************************************************
+2026-02-11 12:10:39,389 p=8036 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:10:39,391 p=8036 u=chedli n=ansible | TASK [Ensure application directory exists] **********************************************************************************************************************************************************************
+2026-02-11 12:10:39,861 p=8036 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:10:39,873 p=8036 u=chedli n=ansible | TASK [application : Copy docker-compose file] *******************************************************************************************************************************************************************
+2026-02-11 12:10:40,074 p=8036 u=chedli n=ansible | An exception occurred during task execution. To see the full traceback, use -vvv. The error was: ansible.errors.AnsibleUndefinedVariable: {{ vault_db_password }}: 'vault_db_password' is undefined. 'vault_db_password' is undefined. {{ vault_db_password }}: 'vault_db_password' is undefined. 'vault_db_password' is undefined
+2026-02-11 12:10:40,074 p=8036 u=chedli n=ansible | fatal: [taskmanager-vm]: FAILED! => {"changed": false, "msg": "AnsibleUndefinedVariable: {{ vault_db_password }}: 'vault_db_password' is undefined. 'vault_db_password' is undefined. {{ vault_db_password }}: 'vault_db_password' is undefined. 'vault_db_password' is undefined"}
+2026-02-11 12:10:40,076 p=8036 u=chedli n=ansible | PLAY RECAP ******************************************************************************************************************************************************************************************************
+2026-02-11 12:10:40,077 p=8036 u=chedli n=ansible | taskmanager-vm             : ok=2    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+2026-02-11 12:15:08,260 p=8896 u=chedli n=ansible | PLAY [Deploy Task Manager Application] **************************************************************************************************************************************************************************
+2026-02-11 12:15:08,274 p=8896 u=chedli n=ansible | TASK [Ensure application directory exists] **********************************************************************************************************************************************************************
+2026-02-11 12:15:12,608 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:12,617 p=8896 u=chedli n=ansible | TASK [application : Copy docker-compose file] *******************************************************************************************************************************************************************
+2026-02-11 12:15:13,544 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:13,548 p=8896 u=chedli n=ansible | TASK [application : Login to Docker Hub] ************************************************************************************************************************************************************************
+2026-02-11 12:15:14,175 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:14,178 p=8896 u=chedli n=ansible | TASK [application : Pull and start application containers] ******************************************************************************************************************************************************
+2026-02-11 12:15:24,659 p=8896 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-11 12:15:24,665 p=8896 u=chedli n=ansible | TASK [backup : Create backup directory] *************************************************************************************************************************************************************************
+2026-02-11 12:15:25,261 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:25,265 p=8896 u=chedli n=ansible | TASK [backup : Copy backup script] ******************************************************************************************************************************************************************************
+2026-02-11 12:15:26,222 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:26,225 p=8896 u=chedli n=ansible | TASK [backup : Create backup cron job] **************************************************************************************************************************************************************************
+2026-02-11 12:15:26,632 p=8896 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-11 12:15:26,645 p=8896 u=chedli n=ansible | TASK [Display application URL] **********************************************************************************************************************************************************************************
+2026-02-11 12:15:26,654 p=8896 u=chedli n=ansible | ok: [taskmanager-vm] => {
+    "msg": "Application deployed! Access at: http://51.107.71.198"
+}
+2026-02-11 12:15:26,660 p=8896 u=chedli n=ansible | PLAY RECAP ******************************************************************************************************************************************************************************************************
+2026-02-11 12:15:26,661 p=8896 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   

@@ -12,7 +12,7 @@ cd "$(dirname "$0")/.."
 ansible-playbook playbooks/setup.yml
 
 echo ""
-echo "✅ Server setup complete!"
+echo "Server setup complete!"
 echo ""
 echo "Next step: Deploy application"
 echo "  ./scripts/deploy.sh"
