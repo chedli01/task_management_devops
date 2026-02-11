@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 # ../scripts/get-inventory.sh
 
 # Run deployment playbook
-ansible-playbook playbooks/deploy.yml
+ansible-playbook playbooks/deploy.yml --ask-vault-pass
 
 echo ""
 echo "Application deployed!"
