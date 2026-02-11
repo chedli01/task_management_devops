@@ -1,0 +1,21 @@
+- name: Deploy Task Manager Application
+  hosts: production
+  become: yes
+  
+  pre_tasks:
+    - name: Ensure application directory exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+  
+  roles:
+    - application
+    - backup
+  
+  post_tasks:
+    - name: Display application URL
+      debug:
+        msg: "Application deployed! Access at: http://{{ ansible_host }}"
