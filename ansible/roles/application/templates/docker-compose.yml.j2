@@ -1,0 +1,67 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: task-manager-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: {{ db_password }}
+      POSTGRES_DB: task_manager_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - task-manager-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d task_manager_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: task-manager-redis
+    networks:
+      - task-manager-network
+
+  backend:
+    image: {{ docker_hub_username }}/task-manager-backend:{{ image_tag }}
+    container_name: task-manager-api
+    environment:
+      NODE_ENV: production
+      PORT: {{ backend_port }}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: {{ db_password }}
+      DB_NAME: task_manager_db
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: {{ jwt_secret }}
+      CORS_ORIGIN: http://localhost
+    depends_on:
+      postgres:
+        condition: service_healthy 
+      redis:
+        condition: service_started
+    networks:
+      - task-manager-network
+    restart: unless-stopped
+
+  frontend:
+    image: {{ docker_hub_username }}/task-manager-frontend:{{ image_tag }}
+    container_name: task-manager-frontend
+    ports:
+      - "80:80"
+    environment:
+      VITE_API_URL: /api
+    depends_on:
+      - backend
+    networks:
+      - task-manager-network
+
+volumes:
+  postgres_data:
+
+networks:
+  task-manager-network:
+    driver: bridge

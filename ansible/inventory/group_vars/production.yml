@@ -1,0 +1,10 @@
+db_password: "chedli123"
+jwt_secret: "your-secret-key-change-in-production"
+backend_port: 5000
+frontend_port: 3000
+domain_name: "{{ ansible_host }}"  # Uses IP for now
+storage_account_name: "taskmanagerprodq20xwdk8"
+backup_retention_days: 7
+docker_hub_username: "chedli01"
+docker_hub_password: "dckr_pat_JimDPQxnWQXxRdj3V8JSR7_2VeU"
+image_tag: "v1"

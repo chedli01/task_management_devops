@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+# Configuration
+BACKUP_DIR="{{ app_dir }}/backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="$BACKUP_DIR/db_backup_$DATE.sql.gz"
+STORAGE_ACCOUNT={{ storage_account_name }}
+CONTAINER="database-backups"
+RETENTION_DAYS={{ backup_retention_days }}
+
+echo "Starting backup at $(date)"
+
+# Create local backup
+docker exec taskmanager-postgres pg_dump \
+  -U postgres \
+  -d task_manager_db \
+  | gzip > "$BACKUP_FILE"
+
+echo "Local backup created: $BACKUP_FILE"
+
+# Upload to Azure Blob Storage
+az storage blob upload \
+  --account-name "$STORAGE_ACCOUNT" \
+  --container-name "$CONTAINER" \
+  --name "db_backup_$DATE.sql.gz" \
+  --file "$BACKUP_FILE" \
+  --auth-mode login
+
+echo "Backup uploaded to Azure Storage"
+
+# Clean local backup
+rm "$BACKUP_FILE"
+
+# Cleanup old backups in Azure (keep last N days)
+az storage blob list \
+  --account-name "$STORAGE_ACCOUNT" \
+  --container-name "$CONTAINER" \
+  --prefix "db_backup_" \
+  --query "[?properties.lastModified < '$(( $(date +%s) - RETENTION_DAYS * 86400 ))'].name" \
+  --output tsv | while read blob; do
+    az storage blob delete \
+      --account-name "$STORAGE_ACCOUNT" \
+      --container-name "$CONTAINER" \
+      --name "$blob"
+    echo "Deleted old backup: $blob"
+  done
+
+echo "Backup completed at $(date)"

@@ -1,0 +1,12 @@
+- name: Setup Task Manager Server
+  hosts: production
+  become: yes
+  
+  roles:
+    - common
+    - docker
+  
+  tasks:
+    - name: Display completion message
+      debug:
+        msg: "Server setup complete! Ready for application deployment."

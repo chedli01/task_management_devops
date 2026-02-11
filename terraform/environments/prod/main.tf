@@ -2,12 +2,12 @@ terraform {
   required_version = ">= 1.0"
 
  
-  backend "azurerm" {
-    resource_group_name  = "taskmanager-prod-rg"
-    storage_account_name = "taskmanagerprodexxarbit"
-    container_name       = "terraform-state"
-    key                  = "prod.terraform.tfstate"
-  }
+  # backend "azurerm" {
+  #   resource_group_name  = "taskmanager-prod-rg"
+  #   storage_account_name = "taskmanagerprodexxarbit"
+  #   container_name       = "terraform-state"
+  #   key                  = "prod.terraform.tfstate"
+  # }
 }
 module "infrastructure" {
   source = "../../modules/single-vm"
