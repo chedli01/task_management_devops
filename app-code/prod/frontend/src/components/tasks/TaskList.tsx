@@ -44,7 +44,7 @@ const TaskList: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold">My Tasks - This is Chedli</h2>
+      <h2 className="text-3xl font-bold">My Tasks - This is Chedli - Part 2 testing</h2>
 
       <TaskForm onTaskCreated={handleTaskCreated} />
 

@@ -5,13 +5,7 @@ on:
   workflow_run:
     workflows: ["Production CI"]  # Must match the name of your CI workflow
     types:
-      - completed
-    branches:
-      - 'main'
-      - 'CI/CD-integration' 
-  push:
-    branches:
-      - 'CI/CD-integration'
+      - completed 
 
 jobs:
   deploy:
