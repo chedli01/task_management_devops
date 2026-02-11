@@ -3,7 +3,7 @@ name: Production CI
 on:
   push:
     branches:
-        - main
+        - 'main'
         - 'CI/CD-integration'
 
   pull_request:
