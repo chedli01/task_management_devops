@@ -9,6 +9,9 @@ on:
     branches:
       - 'main'
       - 'CI/CD-integration' 
+  push:
+    branches:
+      - 'CI/CD-integration'
 
 jobs:
   deploy:
