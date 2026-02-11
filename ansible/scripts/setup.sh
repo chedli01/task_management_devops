@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.."
 ./scripts/get-inventory.sh
 
 # Run setup playbook
-ansible-playbook playbooks/setup.yml
+ansible-playbook playbooks/setup.yml --ask-vault-pass
 
 echo ""
 echo "Server setup complete!"

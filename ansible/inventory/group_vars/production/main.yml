@@ -7,4 +7,4 @@ storage_account_name: "taskmanagerprodq20xwdk8"
 backup_retention_days: 7
 docker_hub_username: "{{ vault_docker_hub_username }}"
 docker_hub_password: "{{ vault_docker_hub_password }}"
-image_tag: "{{ lookup('env','IMAGE_TAG') | default(latest) }}"
+image_tag: 'latest'
