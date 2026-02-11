@@ -1,0 +1,29 @@
+name: Production CD
+
+# Trigger automatically after the CI workflow completes
+on:
+  workflow_run:
+    workflows: ["Production CI"]  # Must match the name of your CI workflow
+    types:
+      - completed 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Update VM via Extension
+        run: |
+          # Update docker-compose on VM without SSH
+          az vm extension set \
+            --resource-group taskmanager-prod-rg \
+            --vm-name taskmanager-prod-vm \
+            --name CustomScript \
+            --publisher Microsoft.Azure.Extensions \
+            --version 2.1 \
+            --settings '{"commandToExecute": "cd /opt/task-manager && docker-compose -f docker-compose.yml down  && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"}' \
+            --no-wait
