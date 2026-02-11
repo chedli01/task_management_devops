@@ -2,10 +2,14 @@ name: Production CD
 
 # Trigger automatically after the CI workflow completes
 on:
-  workflow_run:
-    workflows: ["Production CI"]  # Must match the name of your CI workflow
-    types:
-      - completed 
+ push:
+    branches:
+        - 'main'
+        - 'CI/CD-integration'
+#   workflow_run:
+#     workflows: ["Production CI"]  # Must match the name of your CI workflow
+#     types:
+#       - completed 
 
 jobs:
   deploy:
@@ -26,4 +30,3 @@ jobs:
             --publisher Microsoft.Azure.Extensions \
             --version 2.1 \
             --settings '{"commandToExecute": "cd /opt/task-manager && docker-compose -f docker-compose.yml down  && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"}' \
-            --no-wait
