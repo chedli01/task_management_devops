@@ -11,6 +11,9 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Required to read workflow artifacts
+      actions: read   # Required to access workflow run data
     steps:
       - name: Download image tag artifact
         uses: actions/download-artifact@v4
