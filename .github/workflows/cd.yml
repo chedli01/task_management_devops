@@ -9,8 +9,20 @@ on:
 
 jobs:
   deploy:
+
     runs-on: ubuntu-latest
     steps:
+      - name: Download image tag artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tag
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read image tag
+        id: get_image_tag
+        run: echo "IMAGE_TAG=$(cat image_tag.txt)" >> $GITHUB_ENV
+
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -26,4 +38,4 @@ jobs:
             --publisher Microsoft.Azure.Extensions \
             --version 2.1 \
             --force-update \
-            --settings '{"commandToExecute": "cd /opt/task-manager && docker-compose -f docker-compose.yml down  && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"}' \
+            --settings '{"commandToExecute": "cd /opt/task-manager && sed -i \"s/:latest/:${{ env.IMAGE_TAG }}/g\" && docker-compose -f docker-compose.yml down  && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"}' \
