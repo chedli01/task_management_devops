@@ -334,3 +334,71 @@ issues when running as another user. To avoid this, create the remote_tmp dir wi
 }
 2026-02-11 15:16:00,546 p=41456 u=chedli n=ansible | PLAY RECAP **************************************************************************************************************************
 2026-02-11 15:16:00,546 p=41456 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-02-17 20:05:14,317 p=7752 u=chedli n=ansible | PLAY [Setup Task Manager Server] ***************************************************************************************
+2026-02-17 20:05:14,336 p=7752 u=chedli n=ansible | TASK [Gathering Facts] *************************************************************************************************
+2026-02-17 20:05:19,289 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:19,297 p=7752 u=chedli n=ansible | TASK [common : FORCE CLEANUP Remove broken Docker repo files before APT runs] ******************************************
+2026-02-17 20:05:19,791 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:19,795 p=7752 u=chedli n=ansible | TASK [common : Update apt cache] ***************************************************************************************
+2026-02-17 20:05:20,817 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:20,820 p=7752 u=chedli n=ansible | TASK [common : Upgrade all packages] ***********************************************************************************
+2026-02-17 20:05:22,847 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:22,850 p=7752 u=chedli n=ansible | TASK [common : Install common packages] ********************************************************************************
+2026-02-17 20:05:30,382 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:30,385 p=7752 u=chedli n=ansible | TASK [common : Set timezone to UTC] ************************************************************************************
+2026-02-17 20:05:31,008 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:31,011 p=7752 u=chedli n=ansible | TASK [common : Ensure app directory exists] ****************************************************************************
+2026-02-17 20:05:31,458 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:31,460 p=7752 u=chedli n=ansible | TASK [common : Ensure logs directory exists] ***************************************************************************
+2026-02-17 20:05:31,801 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:31,807 p=7752 u=chedli n=ansible | TASK [docker : Remove old Docker versions] *****************************************************************************
+2026-02-17 20:05:32,683 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:32,686 p=7752 u=chedli n=ansible | TASK [docker : Install Docker prerequisites] ***************************************************************************
+2026-02-17 20:05:39,003 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:39,007 p=7752 u=chedli n=ansible | TASK [docker : Remove conflicting Docker repository entries] ***********************************************************
+2026-02-17 20:05:39,464 p=7752 u=chedli n=ansible | ok: [taskmanager-vm] => (item=/etc/apt/sources.list.d/docker.list)
+2026-02-17 20:05:39,796 p=7752 u=chedli n=ansible | ok: [taskmanager-vm] => (item=/etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list)
+2026-02-17 20:05:39,799 p=7752 u=chedli n=ansible | TASK [docker : Create directory for Docker GPG key] ********************************************************************
+2026-02-17 20:05:40,138 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:05:40,141 p=7752 u=chedli n=ansible | TASK [docker : Add Docker GPG key (Modern way )] ***********************************************************************
+2026-02-17 20:05:40,744 p=7752 u=chedli n=ansible | [WARNING]: Module remote_tmp /root/.ansible/tmp did not exist and was created with a mode of 0700, this may cause
+issues when running as another user. To avoid this, create the remote_tmp dir with the correct permissions manually
+
+2026-02-17 20:05:40,744 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:40,748 p=7752 u=chedli n=ansible | TASK [docker : Add Docker repository] **********************************************************************************
+2026-02-17 20:05:47,791 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:05:47,794 p=7752 u=chedli n=ansible | TASK [docker : Install Docker and Compose Plugin] **********************************************************************
+2026-02-17 20:06:11,348 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:06:11,352 p=7752 u=chedli n=ansible | TASK [docker : Ensure Docker service is running] ***********************************************************************
+2026-02-17 20:06:12,189 p=7752 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:06:12,192 p=7752 u=chedli n=ansible | TASK [docker : Add user to docker group] *******************************************************************************
+2026-02-17 20:06:12,817 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:06:12,824 p=7752 u=chedli n=ansible | TASK [Display completion message] **************************************************************************************
+2026-02-17 20:06:12,833 p=7752 u=chedli n=ansible | ok: [taskmanager-vm] => {
+    "msg": "Server setup complete! Ready for application deployment."
+}
+2026-02-17 20:06:12,840 p=7752 u=chedli n=ansible | RUNNING HANDLER [docker : restart docker] ******************************************************************************
+2026-02-17 20:06:13,986 p=7752 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:06:13,992 p=7752 u=chedli n=ansible | PLAY RECAP *************************************************************************************************************
+2026-02-17 20:06:13,992 p=7752 u=chedli n=ansible | taskmanager-vm             : ok=19   changed=10   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-02-17 20:08:29,217 p=8422 u=chedli n=ansible | PLAY [Deploy Task Manager Application] *********************************************************************************
+2026-02-17 20:08:29,232 p=8422 u=chedli n=ansible | TASK [Ensure application directory exists] *****************************************************************************
+2026-02-17 20:08:30,399 p=8422 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:08:30,414 p=8422 u=chedli n=ansible | TASK [application : Copy docker-compose file] **************************************************************************
+2026-02-17 20:08:31,883 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:08:31,887 p=8422 u=chedli n=ansible | TASK [application : Login to Docker Hub] *******************************************************************************
+2026-02-17 20:08:33,296 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:08:33,300 p=8422 u=chedli n=ansible | TASK [application : Pull and start application containers] *************************************************************
+2026-02-17 20:09:05,105 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:09:05,110 p=8422 u=chedli n=ansible | TASK [backup : Create backup directory] ********************************************************************************
+2026-02-17 20:09:06,682 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:09:06,686 p=8422 u=chedli n=ansible | TASK [backup : Copy backup script] *************************************************************************************
+2026-02-17 20:09:10,518 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:09:10,523 p=8422 u=chedli n=ansible | TASK [backup : Create backup cron job] *********************************************************************************
+2026-02-17 20:09:11,184 p=8422 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:09:11,196 p=8422 u=chedli n=ansible | TASK [Display application URL] *****************************************************************************************
+2026-02-17 20:09:11,206 p=8422 u=chedli n=ansible | ok: [taskmanager-vm] => {
+    "msg": "Application deployed! Access at: http://20.203.145.96"
+}
+2026-02-17 20:09:11,212 p=8422 u=chedli n=ansible | PLAY RECAP *************************************************************************************************************
+2026-02-17 20:09:11,212 p=8422 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
