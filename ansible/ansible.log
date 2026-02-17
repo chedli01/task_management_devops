@@ -402,3 +402,24 @@ issues when running as another user. To avoid this, create the remote_tmp dir wi
 }
 2026-02-17 20:09:11,212 p=8422 u=chedli n=ansible | PLAY RECAP *************************************************************************************************************
 2026-02-17 20:09:11,212 p=8422 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2026-02-17 20:59:44,222 p=18635 u=chedli n=ansible | PLAY [Deploy Task Manager Application] *********************************************************************************
+2026-02-17 20:59:44,248 p=18635 u=chedli n=ansible | TASK [Ensure application directory exists] *****************************************************************************
+2026-02-17 20:59:45,652 p=18635 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:59:45,663 p=18635 u=chedli n=ansible | TASK [application : Copy docker-compose file] **************************************************************************
+2026-02-17 20:59:47,393 p=18635 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 20:59:47,397 p=18635 u=chedli n=ansible | TASK [application : Login to Docker Hub] *******************************************************************************
+2026-02-17 20:59:48,069 p=18635 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 20:59:48,074 p=18635 u=chedli n=ansible | TASK [application : Pull and start application containers] *************************************************************
+2026-02-17 21:00:11,526 p=18635 u=chedli n=ansible | changed: [taskmanager-vm]
+2026-02-17 21:00:11,533 p=18635 u=chedli n=ansible | TASK [backup : Create backup directory] ********************************************************************************
+2026-02-17 21:00:12,108 p=18635 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 21:00:12,112 p=18635 u=chedli n=ansible | TASK [backup : Copy backup script] *************************************************************************************
+2026-02-17 21:00:13,044 p=18635 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 21:00:13,048 p=18635 u=chedli n=ansible | TASK [backup : Create backup cron job] *********************************************************************************
+2026-02-17 21:00:13,434 p=18635 u=chedli n=ansible | ok: [taskmanager-vm]
+2026-02-17 21:00:13,456 p=18635 u=chedli n=ansible | TASK [Display application URL] *****************************************************************************************
+2026-02-17 21:00:13,467 p=18635 u=chedli n=ansible | ok: [taskmanager-vm] => {
+    "msg": "Application deployed! Access at: http://20.203.145.96"
+}
+2026-02-17 21:00:13,474 p=18635 u=chedli n=ansible | PLAY RECAP *************************************************************************************************************
+2026-02-17 21:00:13,474 p=18635 u=chedli n=ansible | taskmanager-vm             : ok=8    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   

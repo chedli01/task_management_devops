@@ -1,19 +1,17 @@
 name: Production CD
 
-# Trigger automatically after the CI workflow completes
 on:
   workflow_run:
-    workflows: ["Production CI"]  # Must match the name of your CI workflow
+    workflows: ["Production CI"]
     types:
       - completed 
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
     permissions:
-      contents: read  # Required to read workflow artifacts
-      actions: read   # Required to access workflow run data
+      contents: read
+      actions: read
     steps:
       - name: Download image tag artifact
         uses: actions/download-artifact@v4
@@ -31,9 +29,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Update VM via Extension
+      - name: Deploy to VM
         run: |
-          # Update docker-compose on VM without SSH
           az vm extension set \
             --resource-group taskmanager-prod-rg \
             --vm-name taskmanager-prod-vm \
@@ -41,4 +38,4 @@ jobs:
             --publisher Microsoft.Azure.Extensions \
             --version 2.1 \
             --force-update \
-            --settings '{"commandToExecute": "cd /opt/task-manager && sed -i \"s/:latest/:${{ env.IMAGE_TAG }}/g\" docker-compose.yml && docker-compose -f docker-compose.yml down  && docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d"}' \
+            --settings '{"commandToExecute": "export IMAGE_TAG=${{ env.IMAGE_TAG }} && cd /opt/task-manager && docker compose down && docker compose pull && docker compose up -d"}'
