@@ -1,3 +1,10 @@
+- name: Copy monitoring configuration directory
+  synchronize:
+    src: "{{ playbook_dir }}/../../monitoring/"
+    dest: "{{ app_dir }}/monitoring/"
+    delete: yes
+  tags: [application, monitoring]
+
 - name: Copy docker-compose file
   template:
     src: "docker-compose.yml.j2"
