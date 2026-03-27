@@ -55,6 +55,8 @@ services:
       VITE_API_URL: /api
     depends_on:
       - backend
+      - grafana
+      - prometheus
     networks:
       - task-manager-network
 
@@ -94,8 +96,6 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    ports:
-      - "9090:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -105,6 +105,8 @@ services:
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
       - '--web.enable-lifecycle'
+      - '--web.external-url=http://{{ansible_host}}/prometheus/'
+      - '--web.route-prefix=/prometheus' 
     networks:
       - task-manager-network
     depends_on:
@@ -113,16 +115,14 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "3001:3000"
     volumes:
-      - ./grafana/datasources/prometheus.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+      - ./monitoring/grafana/datasources/prometheus.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
       - grafana_data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost/grafana/
+      - GF_SERVER_ROOT_URL=http://{{ansible_host}}/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
     networks:
       - task-manager-network
