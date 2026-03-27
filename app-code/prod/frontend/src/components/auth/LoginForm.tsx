@@ -65,7 +65,7 @@ const LoginForm: React.FC = () => {
         <p className="text-center mt-4 text-gray-600">
           Don't have an account?{' '}
           <Link to="/register" className="text-primary-600 hover:underline">
-            Register here
+            Register here now
           </Link>
         </p>
       </Card>
