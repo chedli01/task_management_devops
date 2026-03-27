@@ -83,7 +83,7 @@ const RegisterForm: React.FC = () => {
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{' '}
           <Link to="/login" className="text-primary-600 hover:underline">
-            Login here
+            Login here Please
           </Link>
         </p>
       </Card>
