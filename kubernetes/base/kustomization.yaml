@@ -1,0 +1,5 @@
+resources:
+  - postgres.yaml
+  - redis.yaml
+  - backend.yaml
+  - frontend.yaml
