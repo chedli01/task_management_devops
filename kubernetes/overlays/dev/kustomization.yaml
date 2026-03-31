@@ -1,0 +1,51 @@
+resources:
+  - namespace.yaml
+  - ../../base
+  - ingress.yaml
+
+namespace: task-manager-dev
+
+patches:
+  - path: patches/backend-service-port.yaml
+    target:
+      kind: Service
+      name: backend
+
+replicas:
+  - name: frontend
+    count: 2
+  - name: backend
+    count: 3
+
+images:
+  - name: my-registry/frontend 
+    newName: chedli01/task-manager-frontend-nginx
+    newTag: latest
+  - name: my-registry/backend
+    newName: chedli01/task-manager-backend
+    newTag: latest
+
+configMapGenerator:
+  - name: db-config
+    literals:
+      - POSTGRES_DB=task_manager_db
+      - POSTGRES_USER=postgres
+  - name: backend-config
+    literals:
+      - NODE_ENV=development
+      - PORT=5000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_NAME=task_manager_db
+      - REDIS_URL=redis://redis:6379
+      - CORS_ORIGIN=http://taskmanager.local
+
+secretGenerator:
+  - name: db-credentials
+    literals:
+      - POSTGRES_PASSWORD=chedli123
+  - name: backend-secrets
+    literals:
+      - DB_PASSWORD=chedli123
+      - JWT_SECRET=dev-secret-change-in-production
