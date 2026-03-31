@@ -1,0 +1,57 @@
+name: Production Kubernetes CD
+
+on:
+  workflow_run:
+    workflows: ["Production-k8s CI"]
+    types:
+      - completed 
+
+jobs:
+  deploy-to-aks:
+    name: Deploy to Azure Kubernetes Service
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials \
+            --resource-group taskmanager-prod-k8s-rg \
+            --name taskmanager-prod-k8s-cluster
+
+      - name: Substitute Secrets in Kustomization
+        # Map  GitHub Secrets to the environment variables expected by envsubst
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          # 1. Navigate to where  kustomization.yaml lives
+          cd k8s/overlays/prod
+          
+          # 2. Use envsubst to replace the ${VAR} placeholders with the actual secrets
+          envsubst < kustomization.yaml > kustomization.tmp
+          
+          # 3. Overwrite the original file with the populated one
+          mv kustomization.tmp kustomization.yaml
+          
+          echo "Secrets successfully injected into kustomization.yaml"
+
+      - name: Apply Manifests with Kustomize
+        run: |
+          kubectl apply -k k8s/overlays/prod
+
+      - name: Force Kubernetes to Pull New Images
+        run: |
+          kubectl rollout restart deployment frontend backend -n task-manager-prod
+
+      - name: Verify Deployment Status
+        run: |
+          kubectl rollout status deployment/frontend -n task-manager-prod
+          kubectl rollout status deployment/backend -n task-manager-prod
