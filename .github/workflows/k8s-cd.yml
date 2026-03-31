@@ -33,7 +33,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           # 1. Navigate to where  kustomization.yaml lives
-          cd k8s/overlays/prod
+          cd kubernetes/overlays/prod
           
           # 2. Use envsubst to replace the ${VAR} placeholders with the actual secrets
           envsubst < kustomization.yaml > kustomization.tmp
@@ -45,7 +45,7 @@ jobs:
 
       - name: Apply Manifests with Kustomize
         run: |
-          kubectl apply -k k8s/overlays/prod
+          kubectl apply -k kubernetes/overlays/prod
 
       - name: Force Kubernetes to Pull New Images
         run: |
