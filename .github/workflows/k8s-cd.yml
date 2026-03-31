@@ -26,13 +26,13 @@ jobs:
             --name taskmanager-prod-k8s-cluster
 
       - name: Substitute Secrets in Kustomization
-        # Map your GitHub Secrets to the environment variables expected by envsubst
+        # Map  GitHub Secrets to the environment variables expected by envsubst
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          # 1. Navigate to where your kustomization.yaml lives
+          # 1. Navigate to where  kustomization.yaml lives
           cd k8s/overlays/prod
           
           # 2. Use envsubst to replace the ${VAR} placeholders with the actual secrets
