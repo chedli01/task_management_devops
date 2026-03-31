@@ -3,4 +3,4 @@ terraform/environments/prod/terraform.tfstate.*
 terraform/environments/prod/terraform.secret.tfvars
 terraform/environments/prod/.terraform
 terraform/environments/prod/.terraform.lock.*
-
+kubernetes/overlays/prod/prod-secrets.env
