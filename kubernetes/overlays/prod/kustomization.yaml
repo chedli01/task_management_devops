@@ -39,8 +39,9 @@ configMapGenerator:
 
 secretGenerator:
   - name: db-credentials
-    envs:
-      - prod-secrets.env
+    literals:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
   - name: backend-secrets
-    envs:
-      - prod-secrets.env
+    literals:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
