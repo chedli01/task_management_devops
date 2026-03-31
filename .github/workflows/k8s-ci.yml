@@ -1,4 +1,4 @@
-name: Production CI
+name: Production-k8s CI
 
 on:
   push:

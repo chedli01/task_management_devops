@@ -2,7 +2,7 @@ name: Production Kubernetes CD
 
 on:
   workflow_run:
-    workflows: ["Production CI"]
+    workflows: ["Production-k8s CI"]
     types:
       - completed 
 
