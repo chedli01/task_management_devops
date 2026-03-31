@@ -1,4 +1,4 @@
-name: Production CD
+name: Production Kubernetes CD
 
 on:
   workflow_run:
