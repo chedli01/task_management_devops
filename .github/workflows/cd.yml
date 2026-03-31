@@ -1,13 +1,10 @@
 name: Production CD
 
 on:
-  # workflow_run:
-  #   workflows: ["Production CI"]
-  #   types:
-  #     - completed 
-  push:
-    branches:
-      - 'main'
+  workflow_run:
+    workflows: ["Production CI"]
+    types:
+      - completed 
 
 jobs:
   deploy:

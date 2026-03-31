@@ -3,7 +3,7 @@ name: Production-k8s CI
 on:
   push:
     branches:
-        - 'kubernetes'
+        - 'main'
 
 env:
   REGISTRY: docker.io
