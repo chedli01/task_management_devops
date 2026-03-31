@@ -4,3 +4,13 @@ terraform/environments/prod/terraform.secret.tfvars
 terraform/environments/prod/.terraform
 terraform/environments/prod/.terraform.lock.*
 kubernetes/overlays/prod/prod-secrets.env
+terraform/environments/kubernetes-prod/01-cluster/terraform.tfstate
+terraform/environments/kubernetes-prod/01-cluster/terraform.tfstate.*
+terraform/environments/kubernetes-prod/01-cluster/terraform.secret.tfvars
+terraform/environments/kubernetes-prod/01-cluster/.terraform
+terraform/environments/kubernetes-prod/01-cluster/.terraform.lock.*
+terraform/environments/kubernetes-prod/02-ingress/terraform.tfstate
+terraform/environments/kubernetes-prod/02-ingress/terraform.tfstate.*
+terraform/environments/kubernetes-prod/02-ingress/terraform.secret.tfvars
+terraform/environments/kubernetes-prod/02-ingress/.terraform
+terraform/environments/kubernetes-prod/02-ingress/.terraform.lock.*
