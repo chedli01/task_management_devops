@@ -95,7 +95,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
-      - "9090:9090"  # Changed to 9091 to avoid conflict if you have local Prometheus
+      - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -114,7 +114,7 @@ services:
     image: grafana/grafana:latest
     container_name: grafana
     ports:
-      - "3001:3000"  # Changed to 3001 (your frontend uses 3000)
+      - "3001:3000"
     volumes:
       - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
       - grafana_data:/var/lib/grafana
@@ -130,8 +130,8 @@ services:
 
 volumes:
   postgres_data:
-  prometheus_data:    # NEW: Persist Prometheus data
-  grafana_data:      # NEW: Persist Grafana data
+  prometheus_data:
+  grafana_data:     
 networks:
   task-manager-network:
     driver: bridge

@@ -14,3 +14,8 @@ terraform/environments/kubernetes-prod/02-ingress/terraform.tfstate.*
 terraform/environments/kubernetes-prod/02-ingress/terraform.secret.tfvars
 terraform/environments/kubernetes-prod/02-ingress/.terraform
 terraform/environments/kubernetes-prod/02-ingress/.terraform.lock.*
+terraform/environments/kubernetes-prod/03-monitoring/terraform.tfstate
+terraform/environments/kubernetes-prod/03-monitoring/terraform.tfstate.*
+terraform/environments/kubernetes-prod/03-monitoring/terraform.secret.tfvars
+terraform/environments/kubernetes-prod/03-monitoring/.terraform
+terraform/environments/kubernetes-prod/03-monitoring/.terraform.lock.*
