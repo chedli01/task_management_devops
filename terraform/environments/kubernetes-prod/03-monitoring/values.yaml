@@ -1,5 +1,5 @@
 grafana:
-  adminPassword: "admin"
+  adminPassword: "admin" #just a demo value , going to be overridden by terraform sensitive variable
   
   grafana.ini:
     server:
