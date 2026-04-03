@@ -5,10 +5,12 @@ import rateLimit from 'express-rate-limit';
 import { config } from './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { configureRoutes } from './routes';
+import client from 'prom-client';
 
 const app: Application = express();
 app.set('trust proxy', 1); // Trust first proxy (nginx)
 
+client.collectDefaultMetrics();
 
 // Security middleware
 app.use(helmet());
@@ -39,6 +41,13 @@ app.get('/health', (req, res) => {
     uptime: process.uptime(),
   });
 });
+
+// METRICS endpoint
+app.get('/api/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.send(await client.register.metrics());
+});
+
 
 // API Routes
 configureRoutes(app)
