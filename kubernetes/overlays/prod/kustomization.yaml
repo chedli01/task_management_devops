@@ -10,9 +10,9 @@ patchesStrategicMerge:
 
 replicas:
   - name: frontend
-    count: 5
+    count: 2
   - name: backend
-    count: 5
+    count: 4
 
 images:
   - name: my-registry/frontend 
