@@ -10,9 +10,9 @@ patchesStrategicMerge:
 
 replicas:
   - name: frontend
-    count: 5
+    count: 2
   - name: backend
-    count: 5
+    count: 4
 
 images:
   - name: my-registry/frontend 
@@ -40,7 +40,7 @@ configMapGenerator:
 secretGenerator:
   - name: db-credentials
     envs:
-      - prod-secrets.env
+      - prod-secrets-test.env
   - name: backend-secrets
     envs:
-      - prod-secrets.env
+      - prod-secrets-test.env
