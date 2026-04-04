@@ -1,46 +1,48 @@
 resources:
-  - namespace.yaml
-  - ../../base
-  - ingress.yaml
+- namespace.yaml
+- ../../base
+- ingress.yaml
 
 namespace: task-manager-prod
 
 patchesStrategicMerge:
-  - patches/postgres-env-patch.yaml
+- patches/postgres-env-patch.yaml
 
 replicas:
-  - name: frontend
-    count: 2
-  - name: backend
-    count: 4
+- count: 2
+  name: frontend
+- count: 4
+  name: backend
 
 images:
-  - name: my-registry/frontend 
-    newName: chedli01/task-manager-frontend-nginx
-    newTag: latest
-  - name: my-registry/backend
-    newName: chedli01/task-manager-backend
-    newTag: latest
+- name: my-registry/backend
+  newName: chedli01/task-manager-backend
+  newTag: f9a377c7f46774ccba2e71e933eea7d412d15beb
+- name: my-registry/frontend
+  newName: chedli01/task-manager-frontend-nginx
+  newTag: f9a377c7f46774ccba2e71e933eea7d412d15beb
 
 configMapGenerator:
-  - name: db-config
-    literals:
-      - POSTGRES_DB=task_manager_prod_db
-      - POSTGRES_USER=postgres
-  - name: backend-config
-    literals:
-      - NODE_ENV=production
-      - PORT=5000
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USERNAME=postgres
-      - DB_NAME=task_manager_prod_db
-      - REDIS_URL=redis://redis:6379
+- literals:
+  - POSTGRES_DB=task_manager_prod_db
+  - POSTGRES_USER=postgres
+  name: db-config
+- literals:
+  - NODE_ENV=production
+  - PORT=5000
+  - DB_HOST=postgres
+  - DB_PORT=5432
+  - DB_USERNAME=postgres
+  - DB_NAME=task_manager_prod_db
+  - REDIS_URL=redis://redis:6379
+  name: backend-config
 
 secretGenerator:
-  - name: db-credentials
-    envs:
-      - prod-secrets-test.env
-  - name: backend-secrets
-    envs:
-      - prod-secrets-test.env
+- envs:
+  - prod-secrets-test.env
+  name: db-credentials
+- envs:
+  - prod-secrets-test.env
+  name: backend-secrets
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
