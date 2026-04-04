@@ -40,7 +40,7 @@ configMapGenerator:
 secretGenerator:
   - name: db-credentials
     envs:
-      - prod-secrets.env
+      - prod-secrets-test.env
   - name: backend-secrets
     envs:
-      - prod-secrets.env
+      - prod-secrets-test.env
