@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd-control-plane
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1" 
+spec:
+  project: default
+  source:
+    repoURL: https://helm.linkerd.io/stable
+    targetRevision: 1.16.11
+    chart: linkerd-control-plane
+    helm:
+      parameters:
+        - name: identityTrustAnchorsPEM
+          value: ""
+        - name: identity.issuer.tls.crtPEM
+          value: ""
+        - name: identity.issuer.tls.keyPEM
+          value: ""
+        - name: identity.issuer.crtExpiry
+          value: "2027-01-01T00:00:00Z"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
