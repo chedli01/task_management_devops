@@ -2,6 +2,7 @@ resources:
 - namespace.yaml
 - ../../base
 - ingress.yaml
+- hpa-backend.yaml
 
 namespace: task-manager-prod
 
@@ -11,8 +12,6 @@ patchesStrategicMerge:
 replicas:
 - count: 2
   name: frontend
-- count: 4
-  name: backend
 
 images:
 - name: my-registry/backend
