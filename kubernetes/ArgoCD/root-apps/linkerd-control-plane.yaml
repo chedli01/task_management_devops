@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://helm.linkerd.io/stable
-    targetRevision: 1.8.0
+    targetRevision: 1.16.11
     chart: linkerd-control-plane
     helm:
       parameters:
