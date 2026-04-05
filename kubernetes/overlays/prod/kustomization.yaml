@@ -10,7 +10,7 @@ patchesStrategicMerge:
 - patches/postgres-env-patch.yaml
 
 replicas:
-- count: 2
+- count: 3
   name: frontend
 
 images:
