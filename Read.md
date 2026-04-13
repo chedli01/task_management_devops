@@ -18,54 +18,38 @@ Task Manager is a **complete cloud-native platform** demonstrating production-gr
 ## 🏗️ Architecture
 
 ### Multi-Scale Deployment Strategy
------------------------------------------------------------------                                                          
-│  │   < 10K      │   10K - 100K    │      > 100K               │
-│  │   Users      │   Users         │      Users                │
-│         ↓                ↓                    ↓                
-│  ┌─────────────┐  ┌─────────────┐  ┌──────────────────────┐   │
-│  │  TIER 1     │  │  TIER 2     │  │  TIER 3              │   │
-│  │  Single VM  │  │  Load       │  │  Kubernetes          │   │
-│  │             │  │  Balanced   │  │  Auto-Scaling        │   │
-│  │  $25/month  │  │  $100/month │  │  $200+/month         │   │
-│  └─────────────┘  └─────────────┘  └──────────────────────┘   │
-└───────────────────────────────────────────────────────────────
+
+| Traffic Load | Target Audience | Deployment Tier | Architecture | Estimated Cost |
+| :--- | :--- | :--- | :--- | :--- |
+| **< 10K Users** | Startups, MVPs, Dev | **Tier 1** | Single VM | ~$25/month |
+| **10K - 100K Users** | Growing Apps | **Tier 2** | Load Balanced | ~$100/month |
+| **> 100K Users** | Production Workloads | **Tier 3** | Kubernetes Auto-Scaling | ~$200+/month |
+
+---
 
 ### Tier 1: Single-VM Deployment (Cost-Optimized)
 
 **Target**: Startups, MVPs, Development environments  
 **Capacity**: < 10,000 users  
-**Cost**: ~$25/month
-┌────────────────────────────────────────────┐
-│         Azure VM (Standard B2s)            │
-├────────────────────────────────────────────┤
-│                                             │
-│  ┌──────────────────────────────────────┐  │
-│  │   Docker Compose Stack               │  │
-│  │  ┌────────────────────────────────┐  │  │
-│  │  │  Nginx (Reverse Proxy + Serve frontend)    │  │  │
-│  │  └────────────────────────────────┘  │  │
-│  │  ┌────────────────────────────────┐  │  │
-│  │  │  Backend (Node.js)             │  │  │
-│  │  └────────────────────────────────┘  │  │
-│  │  ┌────────────────────────────────┐  │  │
-│  │  │  PostgreSQL + Redis            │  │  │
-│  │  └────────────────────────────────┘  │  │
-│  │  ┌────────────────────────────────┐  │  │
-│  │  │  Prometheus + Grafana          │  │  │
-│  │  └────────────────────────────────┘  │  │
-│  └──────────────────────────────────────┘  │
-│                                             │
-│  Infrastructure: Terraform + Ansible        │
-│  VNet: 10.0.0.0/16                         │
-│  NSG: SSH (admin IP only), HTTP/HTTPS      │
-└────────────────────────────────────────────┘
+**Cost**: ~$25/month  
+
+```mermaid
+graph TD
+    subgraph Azure VM [Azure VM - Standard B2s]
+        direction TB
+        Proxy[Nginx: Reverse Proxy + Frontend] --> Node[Backend: Node.js]
+        Node --> DB[(PostgreSQL)]
+        Node --> Cache[(Redis)]
+        Monitor[Prometheus + Grafana]
+    end
+```
 
 **Key Features**:
-- Terraform-provisioned Azure VM with VNet isolation
+- Terraform-provisioned Azure VM with VNet isolation (10.0.0.0/16)
+- Azure NSG security rules (SSH admin IP only, HTTP/HTTPS)
 - Ansible-managed OS configuration (idempotent playbooks)
 - Docker Compose orchestration
 - Built-in monitoring (Prometheus + Grafana)
-- Azure NSG security rules
 
 ---
 
@@ -73,57 +57,37 @@ Task Manager is a **complete cloud-native platform** demonstrating production-gr
 
 **Target**: Production workloads, High availability  
 **Capacity**: 100,000+ users  
-**Cost**: ~$200+/month (scales with load)
-┌──────────────────────────────────────────────────────────────────┐
-│                   Azure Kubernetes Service (AKS)                  │
-├──────────────────────────────────────────────────────────────────┤
-│                                                                   │
-│  LAYER 1: Cluster Infrastructure (Terraform)                     │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  • AKS Cluster (3 nodes, auto-scaling 1-10)               │  │
-│  │  • VNet + Subnets (10.1.0.0/16)                           │  │
-│  │  • Network Security Groups                                │  │
-│  │  • ArgoCD Bootstrap (on cluster init)                     │  │
-│  └────────────────────────────────────────────────────────────┘  │
-│                            ↓                                      │
-│  LAYER 2: Ingress (Nginx Ingress Controller)                     │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  Routes:                                                   │  │
-│  │    / → Frontend Service                                    │  │
-│  │    /api → Backend Service                                  │  │
-│  │    /health → Backend Health Check                          │  │
-│  └────────────────────────────────────────────────────────────┘  │
-│                            ↓                                      │
-│  LAYER 3: Monitoring (kube-prometheus-stack)                      │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  • Prometheus Operator                                     │  │
-│  │  • ServiceMonitor CRDs (app metrics)                       │  │
-│  │  • Grafana Dashboards                                      │  │
-│  │  • AlertManager                                            │  │
-│  └────────────────────────────────────────────────────────────┘  │
-│                            ↓                                      │
-│  LAYER 4: GitOps (ArgoCD)                                         │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  App-of-Apps Pattern:                                      │  │
-│  │    ├─ Root App (manages children)                          │  │
-│  │    ├─ Linkerd Service Mesh App                             │  │
-│  │    ├─ Backend App (watches manifests repo)                 │  │
-│  │    └─ Frontend App (auto-sync on Git changes)              │  │
-│  └────────────────────────────────────────────────────────────┘  │
-│                            ↓                                      │
-│  APPLICATION LAYER                                                │
-│  ┌────────────────────────────────────────────────────────────┐  │
-│  │  Deployments:                                              │  │
-│  │    • Backend (2-10 replicas, HPA-managed)                  │  │
-│  │    • Frontend (2-10 replicas, HPA-managed)                 │  │
-│  │  StatefulSets:                                             │  │
-│  │    • PostgreSQL (1 replica, PVC: 10Gi)                     │  │
-│  │  Deployments:                                              │  │
-│  │    • Redis (1 replica, PVC: 5Gi)                           │  │
-│  │                                                             │  │
-│  │  Service Mesh: Linkerd (mTLS, latency-aware LB)           │  │
-│  └────────────────────────────────────────────────────────────┘  │
-└──────────────────────────────────────────────────────────────────┘
+**Cost**: ~$200+/month (scales with load)  
+
+#### Layer 1: Cluster Infrastructure (Terraform)
+- AKS Cluster (3 nodes, auto-scaling 1-10)
+- VNet + Subnets (10.1.0.0/16)
+- Network Security Groups
+- ArgoCD Bootstrap (on cluster init)
+
+#### Layer 2: Ingress (Nginx Ingress Controller)
+- `/` → Frontend Service
+- `/api` → Backend Service
+- `/health` → Backend Health Check
+
+#### Layer 3: Monitoring (kube-prometheus-stack)
+- Prometheus Operator
+- ServiceMonitor CRDs (app metrics)
+- Grafana Dashboards
+- AlertManager
+
+#### Layer 4: GitOps (ArgoCD App-of-Apps)
+- Root App (manages children)
+- Linkerd Service Mesh App
+- Backend App (watches manifests repo)
+- Frontend App (auto-sync on Git changes)
+
+#### Application Layer
+- **Backend Deployment**: 2-10 replicas, HPA-managed
+- **Frontend Deployment**: 2-10 replicas, HPA-managed
+- **PostgreSQL StatefulSet**: 1 replica, PVC: 10Gi
+- **Redis Deployment**: 1 replica, PVC: 5Gi
+- **Service Mesh**: Linkerd (mTLS, latency-aware LB)
 
 ---
 
@@ -151,8 +115,8 @@ graph LR
     I --> J[Auto-Sync Cluster]
     J --> K[✅ Deployed]
     
-    style A fill:#e1f5ff
-    style K fill:#d4edda
+    style A fill:#e1f5ff,stroke:#000
+    style K fill:#d4edda,stroke:#000
 ```
 
 **Benefits**:
@@ -163,26 +127,17 @@ graph LR
 - ✅ **Multi-App Management**: App-of-Apps pattern for hierarchical deployments
 
 ### Service Mesh Security (Linkerd)
-┌─────────────────────────────────────────────────────────┐
-│  Pod: Backend                                            │
-│  ┌─────────────┐  ┌──────────────────────────────────┐  │
-│  │   App       │  │  Linkerd Proxy (Sidecar)         │  │
-│  │  Container  │→ │  • mTLS Encryption               │  │
-│  │             │  │  • Latency-aware Load Balancing  │  │
-│  │             │  │  • Circuit Breakers              │  │
-│  │             │  │  • Golden Metrics Collection     │  │
-│  └─────────────┘  └──────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────┘
-↓ Encrypted mTLS ↓
-┌─────────────────────────────────────────────────────────┐
-│  Pod: Frontend                                           │
-│  ┌──────────────────────────────────┐  ┌─────────────┐  │
-│  │  Linkerd Proxy (Sidecar)         │  │   App       │  │
-│  │  • Decrypt mTLS                  │→ │  Container  │  │
-│  │  • Request Retries               │  │             │  │
-│  │  • Timeout Handling              │  │             │  │
-│  └──────────────────────────────────┘  └─────────────┘  │
-└─────────────────────────────────────────────────────────┘
+
+```mermaid
+flowchart LR
+    subgraph Frontend Pod
+        AppA[Frontend Container] --> ProxyA[Linkerd Proxy Sidecar]
+    end
+    subgraph Backend Pod
+        ProxyB[Linkerd Proxy Sidecar] --> AppB[Backend Container]
+    end
+    ProxyA -- Encrypted mTLS --> ProxyB
+```
 
 **Features**:
 - **Zero-Trust Networking**: Automatic mTLS between all services
@@ -192,12 +147,8 @@ graph LR
 
 ### Horizontal Pod Autoscaler with ArgoCD Reconciliation
 
-**The Problem**:
-ArgoCD: "Git says 4 replicas"
-HPA: "I need 8 replicas for load!"
-ArgoCD: "Drift detected! Rolling back to 4"
-HPA: "Scaling back to 8!"
-→ INFINITE LOOP! 🔄
+**The Problem**: 
+ArgoCD demands 4 replicas (based on Git). The HPA scales to 8 replicas (based on load). ArgoCD detects "drift" and kills 4 pods. HPA scales back up. This creates an infinite crash loop.
 
 **The Solution**:
 ```yaml
@@ -215,7 +166,6 @@ spec:
     jsonPointers:
     - /spec/replicas
 ```
-
 **Result**: HPA manages replicas dynamically, ArgoCD manages everything else. Perfect coexistence! ✅
 
 ---
@@ -332,22 +282,16 @@ jobs:
 ```
 
 ### CD Workflow (ArgoCD - Pull-based)
-Git Manifests Repository
-↓
-[Git Push Event]
-↓
-ArgoCD Watches
-↓
-Detects Change
-↓
-Compares Desired (Git) vs Actual (Cluster)
-↓
-Auto-Sync Enabled
-↓
-kubectl apply manifests
-↓
-✅ Cluster Updated
 
+```mermaid
+graph TD
+    A[Git Manifests Repository] -->|Git Push Event| B[ArgoCD Watches]
+    B --> C[Detects Change]
+    C --> D[Compares Desired vs Actual]
+    D --> E[Auto-Sync Enabled]
+    E --> F[kubectl apply manifests]
+    F --> G[✅ Cluster Updated]
+```
 **No cluster credentials in CI!** 🔒
 
 ---
@@ -394,21 +338,18 @@ kubectl apply manifests
 ## 🔒 Security
 
 ### Network Security
-
 - **Azure NSG**: Restrictive firewall rules (SSH admin-only, public HTTPS)
 - **VNet Isolation**: Separate subnets for app, data, management
 - **Service Mesh mTLS**: Encrypted service-to-service communication
 - **Ingress TLS**: HTTPS termination at ingress controller
 
 ### Secrets Management
-
 - **Kubernetes Secrets**: Base64-encoded secrets in cluster
 - **Azure Key Vault**: External secrets via CSI driver integration
 - **Ansible Vault**: Encrypted secrets in Ansible playbooks
 - **No Hardcoded Credentials**: All sensitive data externalized
 
 ### Access Control
-
 - **SSH Key Authentication**: Password auth disabled
 - **Azure Managed Identity**: VM-to-Azure resource authentication
 - **Kubernetes RBAC**: Role-based access control for cluster resources
@@ -417,31 +358,33 @@ kubectl apply manifests
 ---
 
 ## 📁 Project Structure
+
+```text
 task-manager/
 ├── terraform/
 │   ├── modules/
-│   │   ├── single-vm/          # Tier 1: VM infrastructure
-│   │   └── kubernetes-cluster/                # Tier 3: Kubernetes cluster
+│   │   ├── single-vm/           # Tier 1: VM infrastructure
+│   │   └── kubernetes-cluster/  # Tier 3: Kubernetes cluster
 │   └── environments/
 │       ├── kubernetes-prod/
 │       └── prod/
 ├── ansible/
 │   ├── roles/
-│   │   ├── docker/             # Docker installation
-│   │   ├── application/        # App deployment
+│   │   ├── docker/              # Docker installation
+│   │   ├── application/         # App deployment
 │   │   └── common/        
 │   └── playbooks/
 ├── kubernetes/
-│   ├── base/                   # Base Kustomize manifests
+│   ├── base/                    # Base Kustomize manifests
 │   │   ├── backend/
 │   │   ├── frontend/
 │   │   ├── postgres/
 │   │   └── redis/
 │   ├── overlays/
-│   │   ├── dev/                # Dev-specific configs
-│   │   └── prod/               # Prod-specific configs
+│   │   ├── dev/                 # Dev-specific configs
+│   │   └── prod/                # Prod-specific configs
 │   └── argocd/
-│       └── root-apps/               # Child applications
+│       └── root-apps/           # Child applications
 ├── monitoring/
 │   ├── prometheus/
 │   │   └── prometheus.yml
@@ -450,9 +393,9 @@ task-manager/
 │       └── datasources/
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml              # Build & push images
-│       └── cd-vm.yml           # Deploy to VM tier
-
+│       ├── ci.yml               # Build & push images
+│       └── cd-vm.yml            # Deploy to VM tier
+```
 
 ---
 
@@ -490,21 +433,15 @@ task-manager/
 
 ## 📊 Performance Metrics
 
-### Deployment Speed
-- **Initial Infrastructure Provision**: ~15 minutes (Terraform + Ansible)
-- **Code to Production (VM Tier)**: ~5 minutes
-- **Code to Production (K8s Tier)**: ~3 minutes (GitOps)
-- **Rollback Time**: <1 minute (git revert + ArgoCD sync)
-
-### Cost Optimization
-- **Single-VM Tier**: $25/month (< 10K users)
-- **Kubernetes Tier**: $200+/month (100K+ users, scales with load)
-- **Cost Savings**: 88% for low-traffic workloads by right-sizing infrastructure
-
-### Scalability
-- **HPA Response Time**: < 30 seconds from load spike to scaled pods
-- **Zero-Downtime Deployments**: Rolling updates with readiness probes
-- **Auto-Scaling Range**: 2-10 replicas (configurable)
+| Metric | Target / Result |
+| :--- | :--- |
+| **Initial Infrastructure Provision** | ~15 minutes (Terraform + Ansible) |
+| **Code to Production (VM Tier)** | ~5 minutes |
+| **Code to Production (K8s Tier)** | ~3 minutes (GitOps) |
+| **Rollback Time** | < 1 minute (git revert + ArgoCD sync) |
+| **Cost Savings** | 88% for low-traffic workloads by right-sizing infrastructure |
+| **HPA Response Time** | < 30 seconds from load spike to scaled pods |
+| **Auto-Scaling Range** | 2-10 replicas (configurable) |
 
 ---
 
@@ -512,12 +449,10 @@ task-manager/
 
 This project demonstrates:
 
-✅ **Production-Ready Infrastructure**: Not a toy project 
-✅ **GitOps Best Practices**: Pull-based CD with zero cluster credentials in CI  
-✅ **Service Mesh Expertise**: Zero-trust networking with transparent mTLS  
-✅ **Problem-Solving Skills**: Solved ArgoCD-HPA conflict (rare advanced pattern)  
-✅ **Cost-Conscious Design**: Multi-tier architecture optimizes spend vs. scale  
-✅ **Security-First Mindset**: Defense in depth (NSG, mTLS, secrets management)  
-✅ **Observability Culture**: Golden metrics, custom dashboards, alerting  
-
----
+- ✅ **Production-Ready Infrastructure**: Not a toy project 
+- ✅ **GitOps Best Practices**: Pull-based CD with zero cluster credentials in CI  
+- ✅ **Service Mesh Expertise**: Zero-trust networking with transparent mTLS  
+- ✅ **Problem-Solving Skills**: Solved ArgoCD-HPA conflict (rare advanced pattern)  
+- ✅ **Cost-Conscious Design**: Multi-tier architecture optimizes spend vs. scale  
+- ✅ **Security-First Mindset**: Defense in depth (NSG, mTLS, secrets management)  
+- ✅ **Observability Culture**: Golden metrics, custom dashboards, alerting
